@@ -2,16 +2,6 @@ var http = require('http'),
 	fs = require('fs'),
 	Commander = require('./commander.js');
 
-/**
-*	Simple implementation to control a commander via httpServer
-*	flow:
-* 		[start] to run a command
-*		[stop] 	to stop running command
-* 		[start] to run next command
-* 		[stop] 	to stop running command
-* 		[reset] to reset commander
-*/
-
 var messages = {
 	'host': 'localhost',
 	'server.locked': 'Server locked.',
