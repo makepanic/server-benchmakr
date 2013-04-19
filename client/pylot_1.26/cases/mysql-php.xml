@@ -1,0 +1,6 @@
+<testcases>
+    <!-- SAMPLE TEST CASE -->
+    <case>
+        <url>TARGETURL/db.php</url>
+    </case>
+</testcases>

@@ -1,0 +1,7 @@
+<testcases>
+    <!-- SAMPLE TEST CASE -->
+    <case>
+	<!-- php time -->
+        <url>TARGETURL/time.php</url>
+    </case>
+</testcases>

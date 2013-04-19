@@ -1,0 +1,6 @@
+<testcases>
+    <!-- SAMPLE TEST CASE -->
+    <case>
+        <url>TARGETURL:1351/</url>
+    </case>
+</testcases>

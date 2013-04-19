@@ -1,0 +1,6 @@
+<testcases>
+    <!-- SAMPLE TEST CASE -->
+    <case>
+        <url>TARGETURL:8080/servlet/mysql-sub</url>
+    </case>
+</testcases>

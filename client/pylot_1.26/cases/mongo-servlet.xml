@@ -1,0 +1,7 @@
+
+<testcases>
+    <!-- SAMPLE TEST CASE -->
+    <case>
+        <url>TARGETURL:8080/servlet/mongo</url>
+    </case>
+</testcases>
