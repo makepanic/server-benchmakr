@@ -23,8 +23,8 @@ var cfg = {
 };
 
 var commands = [{
-	params: [],
-	command: 'pwd'
+	params: ['nodejs/time.js'],
+	command: 'node'
 },{
 	params: ['-la'],
 	command: 'ls'
