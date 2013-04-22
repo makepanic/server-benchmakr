@@ -28,4 +28,4 @@ This starts 3 servers listening on defined ports (default: 9001,9002,9003). Each
 	curl localhost:9002		[stop] 	to stop running command
 	curl localhost:9003		[reset] to reset commander
 
-	//commander is now on command #3
+	//commander is now on command #1
