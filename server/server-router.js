@@ -18,17 +18,32 @@ var cfg = {
 	ports: {
 		startServer: 9001,
 		stopServer: 9002,
-		resetServer: 9003
+		resetServer: 9003,
+		getCommands: 9004
 	}
 };
 
+var types = {
+	'nodejs.time' :{
+		'framework':'nodejs',
+		'port':8000
+	},
+	'nodejs.db':{
+		'framework':'nodejs',
+		'port':8001 
+	}
+}
+
 var commands = [{
+	meta: types['nodejs.time'],
 	params: ['nodejs/time.js'],
 	command: 'node'
 },{
-	params: ['-la'],
-	command: 'ls'
+	meta: types['nodejs.db'],
+	params: ['nodejs/db.js'],
+	command: 'node'
 },{
+	meta: types.php,
 	params: ['-u'],
 	command: 'date'
 }];
@@ -131,6 +146,15 @@ http.createServer(function(req, res){
 
 }).listen(cfg.ports.resetServer);
 
+http.createServer(function(req, res){
+	console.log('connection at getCommands server');
+	
+	res.writeHead(200);
+	res.end(slave.getCommands());
+
+}).listen(cfg.ports.getCommands);
+
 console.log('[start] ' + messages['host'] + ':' + cfg.ports.startServer);
-console.log('[stop ] ' + messages['host'] + ':' + cfg.ports.stopServer);
+console.log('[stop ] ' + messages['host'] + ':' + cfg.ports.stopServer );
 console.log('[reset] ' + messages['host'] + ':' + cfg.ports.resetServer);
+console.log('[plan ] ' + messages['host'] + ':' + cfg.ports.getCommands);

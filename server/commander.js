@@ -10,6 +10,9 @@ var Commander = function(cfg, commands, finished){
 	this.child = null;
 };
 Commander.prototype = {
+	getCommands: function(){
+		return JSON.stringify(this.commands);
+	},
 	reset: function(){
 		this.step = 0;
 	},
