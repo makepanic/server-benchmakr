@@ -3,54 +3,43 @@ var cp = require('child_process'),
 
 var Commander = function(cfg, finished){
 	this.cfg = cfg;
-	this.commands = [];
-	this.step = 0;
-	this.applications = 0;
+
+	this.currentTest = 0;
+	this.currentApplication = 0;
+
+	this.applications = [];
+
 	this.finished = finished;
 	this.done = {};
 	this.child = null;
 
-	this._buildCommands();
+	this._buildIndex();
 };
 Commander.prototype = {
-	_buildCommands : function(){
+	_buildIndex : function(){
 		for(var i = 0, max = this.cfg.length; i < max; i++){
-
-			var test = this.cfg[i];
-			for(var j = 0, maxJ = test['tests'].length; j < maxJ; j++){
-				var item = test['tests'][j];
-				var cmd = {
-					command: test['command'],
-					params: [test['directory'] + '/' + item['file']]
-				};
-				this.commands.push(cmd);
-			}
+			this.applications.push(this.cfg[i]);
 		}
+	},
+	getCurrentApplication: function(){
+		return this.applications[this.currentApplication];
+	},
+	getCurrentTest: function(){
+		var app = this.getCurrentApplication();
+		return app['tests'][this.currentTest];
 	},
 	getCurrent: function(){
 		return {
-			app: {
-				'application' : this.cfg[this.applications]['application'],
-				'directory' : this.cfg[this.applications]['directory']
-			},
-			commands: this.getCurrentCommand()
+			'test': this.getCurrentTest(),
+			'application': this.getCurrentApplication()
 		}
 	},
-	getNextCommand: function(){
-		if(this.step + 1 < this.commands.length){
-			return this.commands[this.step + 1];
-		}else{
-			return {};
-		}
-	},
-	getCurrentCommand: function(){
-		return this.commands[this.step];
-	},
-	getCommands: function(){
-		return this.commands;
+	getCurrentApplicationTestLength: function(){
+		return this.getCurrentApplication()['tests'].length;
 	},
 	reset: function(){
-		this.step = 0;
+		this.currentTest = 0;
+		this.currentApplication = 0;
 	},
 	stop: function(){
 		if(this.child){
@@ -62,22 +51,22 @@ Commander.prototype = {
 	},
 	next: function(done){
 		this.done = done;
-		if(this.step + 1 <= this.commands.length){
+		if(this.currentTest + 1 <= this.getCurrentApplicationTestLength()){
 			this._exec();
 		}else{
-			if(this.application + 1 <= this.cfg.length){
-				this.application++;
-				this.step = 0;
+			if(this.currentApplication + 1 < this.applications.length){
+				this.currentApplication++;
+				this.currentTest = 0;
 				this.next(done);
 			}else{
 				console.log('no remaining commands and applications, calling done');
-				this.done(this.step == this.commands.length);				
+				this.done(this.currentTest == this.getCurrentApplicationTestLength());				
 			}
 		}
 	},
 	_exec: function(){
-		var app = this.cfg[this.applications],
-			test = app['tests'][this.step],
+		var app = this.getCurrentApplication(),
+			test = this.getCurrentTest(),
 			command = {
 				'command' : app['command'],
 				'params' : [app['directory'] + '/' + test['file']]
@@ -85,15 +74,16 @@ Commander.prototype = {
 			child,
 			that = this;
 
-		this.step++;
+		this.currentTest++;
 
 		var fullCommand = command.command + ' ' + command.params.join(' ');
-		console.log('[ Commander: ' + this.step + '/' + this.commands.length + ' ] ' + fullCommand);
+		console.log('[ Commander: application: ' + (this.currentApplication + 1) + '/' + this.applications.length + '\t]');
+		console.log('[ Commander: test:        ' + this.currentTest + '/' + this.getCurrentApplicationTestLength() + '\t] ' + fullCommand);
 
 		this.child = cp.spawn(command.command, command.params);
 		this.child.on('close', function(code){
 			console.log('child process terminated code:' + code);
-			that.done(this.step == that.commands.length);
+			that.done(that.currentTest == that.getCurrentApplicationTestLength());
 		});
 		this.child.stdout.on('data', function (data) {
 		  console.log('stdout: ' + data);

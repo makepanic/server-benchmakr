@@ -1,0 +1,16 @@
+{
+  "application" : "dummy",
+  "directory" : "dummy",
+  "command" : "ls",
+  "tests" : [{
+    "name" : "time",
+    "port" : 8000,
+    "file" : "",
+    "baseurl" : "/"
+  },{
+    "name" : "pwd",
+    "port" : 8001,
+    "file" : "",
+    "baseurl" : "/"
+  }]
+}

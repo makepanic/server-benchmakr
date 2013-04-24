@@ -59,12 +59,7 @@ fs.readdir(p, function (err, files) {
 var boot = function(benchmarks){
 	console.log('booting benchmark server router');
 
-	var commands = [];
-	for(var i = 0, max = benchmarks.length; i < max; i++){
-		commands.push(benchmarks[i]);
-	}
-
-	var slave = new Commander(commands, function(){
+	var slave = new Commander(benchmarks, function(){
 		unlock();
 		console.log('commander finished');
 	});
