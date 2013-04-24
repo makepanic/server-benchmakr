@@ -1,3 +1,8 @@
+var red, blue, reset;
+	red   = '\u001b[31m';
+	blue  = '\u001b[34m';
+	reset = '\u001b[0m';
+
 var cp = require('child_process'),
 	sys = require('sys');
 
@@ -77,8 +82,11 @@ Commander.prototype = {
 		this.currentTest++;
 
 		var fullCommand = command.command + ' ' + command.params.join(' ');
-		console.log('[ Commander: application: ' + (this.currentApplication + 1) + '/' + this.applications.length + '\t]');
-		console.log('[ Commander: test:        ' + this.currentTest + '/' + this.getCurrentApplicationTestLength() + '\t] ' + fullCommand);
+		
+		//output
+		console.log(red + '[ Commander: application ' + (this.currentApplication + 1) + '/' + this.applications.length + '\t]' + reset);
+		console.log(blue + '[ Commander: test        ' + this.currentTest + '/' + this.getCurrentApplicationTestLength() + '\t] ' + reset);
+		console.log(reset + '\t' + fullCommand + '\n');
 
 		this.child = cp.spawn(command.command, command.params);
 		this.child.on('close', function(code){
