@@ -1,17 +1,53 @@
 var cp = require('child_process'),
 	sys = require('sys');
 
-var Commander = function(cfg, commands, finished){
+var Commander = function(cfg, finished){
 	this.cfg = cfg;
-	this.commands = commands;
+	this.commands = [];
 	this.step = 0;
+	this.applications = 0;
 	this.finished = finished;
 	this.done = {};
 	this.child = null;
+
+	this._buildCommands();
 };
 Commander.prototype = {
+	_buildCommands : function(){
+		for(var i = 0, max = this.cfg.length; i < max; i++){
+
+			var test = this.cfg[i];
+			for(var j = 0, maxJ = test['tests'].length; j < maxJ; j++){
+				var item = test['tests'][j];
+				var cmd = {
+					command: test['command'],
+					params: [test['directory'] + '/' + item['file']]
+				};
+				this.commands.push(cmd);
+			}
+		}
+	},
+	getCurrent: function(){
+		return {
+			app: {
+				'application' : this.cfg[this.applications]['application'],
+				'directory' : this.cfg[this.applications]['directory']
+			},
+			commands: this.getCurrentCommand()
+		}
+	},
+	getNextCommand: function(){
+		if(this.step + 1 < this.commands.length){
+			return this.commands[this.step + 1];
+		}else{
+			return {};
+		}
+	},
+	getCurrentCommand: function(){
+		return this.commands[this.step];
+	},
 	getCommands: function(){
-		return JSON.stringify(this.commands);
+		return this.commands;
 	},
 	reset: function(){
 		this.step = 0;
@@ -29,12 +65,23 @@ Commander.prototype = {
 		if(this.step + 1 <= this.commands.length){
 			this._exec();
 		}else{
-			console.log('no remaining commands, calling done');
-			this.done(this.step == this.commands.length);
+			if(this.application + 1 <= this.cfg.length){
+				this.application++;
+				this.step = 0;
+				this.next(done);
+			}else{
+				console.log('no remaining commands and applications, calling done');
+				this.done(this.step == this.commands.length);				
+			}
 		}
 	},
 	_exec: function(){
-		var command = this.commands[this.step],
+		var app = this.cfg[this.applications],
+			test = app['tests'][this.step],
+			command = {
+				'command' : app['command'],
+				'params' : [app['directory'] + '/' + test['file']]
+			},
 			child,
 			that = this;
 
