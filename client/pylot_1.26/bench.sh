@@ -1,5 +1,21 @@
 #! /bin/bash
 
+# USAGE:
+# -t TEST-APP
+# -f TEST-CASE
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+  echo "runs a pylot benchmark, creates result graphs with gnuplot (via plot-all.sh)"
+  echo ""
+  echo "Usage:"
+  echo "-t application type, eg. >nodejs<"
+  echo "-f pylot case file, eg. >time< ( automatically adds *.xml )"
+  echo ""
+  echo "Example: ./bench.sh -t nodejs -f mysql"
+  exit 0
+fi
+
+
 # pylot cfg
 agents=100
 duration=30
