@@ -8,20 +8,19 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
   echo "runs a pylot benchmark, creates result graphs with gnuplot (via plot-all.sh)"
   echo ""
   echo "Usage:"
-  echo "-t application type, eg. >nodejs<"
-  echo "-f pylot case file, eg. >time< ( automatically adds *.xml )"
+  echo "	-t application type, eg. \"nodejs\""
+  echo "	-f pylot case file , eg. \"time\" ( automatically adds *.xml )"
   echo ""
   echo "Example: ./bench.sh -t nodejs -f mysql"
   exit 0
 fi
-
 
 # pylot cfg
 agents=100
 duration=30
 rampup=0
 target="http://your-server-baseurl-here.com"
-timeout=5
+timeout=2
 
 # cases cfg
 caseDir="cases/"
@@ -82,33 +81,16 @@ fi
 
 echo "running with case '$targetPath'"
 echo "pylot agents=$agents duration=$duration"
-
-#exit 0;
-
 echo "inserting target url in pylot test cases"
 
 cp -R ./cases ./cases.bak
-sed -i "s|TARGETURL|$target|g" ./cases/$testType/*.xml
+sed -i "s|TARGETURL|$target|g" $caseFile
 
-find ./cases -iregex '.*.xml' | while read line; do
-	filedir=$(dirname $line)
-	filename=$(basename $line)
-	name="${filename%.*}"
+name=$caseFile
+cmd="python2 run.py -n $name -r $rampup -a $agents -d $duration -x $caseFile > results/$name.pylot"
 
-	echo "remote ctrl start command"
-	curl "$target:9001"
-
-	sleep $timeout
-	
-	cmd="python2 run.py -n $name -r $rampup -a $agents -d $duration -x cases/$filename > results/$name.pylot"
-	echo "running $cmd"
-	#eval $cmd
-
-	echo "remote ctrl stop command"
-	curl "$target:9002"
-
-	sleep $timeout
-done
+#sleep a while
+sleep $timeout
 
 echo "exec plot script"
 sh ./plot-all.sh
