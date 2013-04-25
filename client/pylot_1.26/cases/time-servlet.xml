@@ -1,7 +1,0 @@
-<testcases>
-    <!-- SAMPLE TEST CASE -->
-    <case>
-	<!-- php time -->
-        <url>TARGETURL:8080/servlet/</url>
-    </case>
-</testcases>

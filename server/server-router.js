@@ -158,10 +158,12 @@ var boot = function(benchmarks){
 	}).listen(cfg.ports.resetServer);
 
 	http.createServer(function(req, res){
+		var response = slave ? slave.getCurrent() : {};
+
 		console.log('connection at getCommands server');
 		
 		res.writeHead(200, {"Content-Type": "application/json"});
-		res.end(JSON.stringify(slave.getCurrentCommand()));
+		res.end(JSON.stringify(response));
 
 	}).listen(cfg.ports.getCommands);
 

@@ -1,6 +1,5 @@
-var red, blue, reset;
-	red   = '\u001b[31m';
-	blue  = '\u001b[34m';
+var red = '\u001b[31m',
+	blue = '\u001b[34m',
 	reset = '\u001b[0m';
 
 var cp = require('child_process'),

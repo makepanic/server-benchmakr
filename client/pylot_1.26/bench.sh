@@ -1,19 +1,78 @@
 #! /bin/bash
 
+# pylot cfg
 agents=100
 duration=30
 rampup=0
 target="http://your-server-baseurl-here.com"
 timeout=5
 
+# cases cfg
+caseDir="cases/"
+targetPath=""
+caseFile=""
+testType=""
+
+if [ -d "cases.bak" ]; then
+	# abort if old cases backup exists
+	# dont run pylot tests parallel
+	echo "old case backup exists, stopping"
+	exit 1
+fi
+
+while getopts ":f:t:" optname
+  do
+    case "$optname" in
+      "t")
+        echo "-t set $OPTARG"
+        testType="$OPTARG"
+        ;;
+      "f")
+        echo "-f set $OPTARG"
+        caseFile="$OPTARG"
+        ;;
+      "?")
+        echo "Unknown option $OPTARG"
+        exit 1;
+        ;;
+      ":")
+        echo "No argument value for option $OPTARG"
+        exit 1;
+        ;;
+      *)
+      # Should not occur
+        echo "Unknown error while processing options"
+        exit 1;
+        ;;
+    esac
+  done
+
+if [[ -z "$testType" ]]; then
+	echo "no testType set, aborting"
+	exit 1
+fi
+if [[ -z "$caseFile" ]]; then
+	echo "no caseFile set, aborting"
+	exit 1
+fi
+
+targetPath="$caseDir$testType/$caseFile.xml"
+
+
+if [ ! -e "$targetPath" ]; then
+	echo "target path $targetPath does not exists, aborting"
+	exit 1
+fi
+
+echo "running with case '$targetPath'"
 echo "pylot agents=$agents duration=$duration"
 
-echo "removing old results"
-rm -rf ./results/*
+#exit 0;
 
 echo "inserting target url in pylot test cases"
+
 cp -R ./cases ./cases.bak
-sed -i "s|TARGETURL|$target|g" ./cases/*.xml
+sed -i "s|TARGETURL|$target|g" ./cases/$testType/*.xml
 
 find ./cases -iregex '.*.xml' | while read line; do
 	filedir=$(dirname $line)
@@ -37,12 +96,6 @@ done
 
 echo "exec plot script"
 sh ./plot-all.sh
-
-echo "creating result archive"
-tar -zcvf pylot-results.tar.gz ./results/
-
-echo "moving pylot-results.tar.gz to ~"
-cp pylot-results.tar.gz ~/
 
 echo "reverting cases files"
 rm -rf ./cases

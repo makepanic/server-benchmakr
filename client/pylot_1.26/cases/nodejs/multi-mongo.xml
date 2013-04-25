@@ -1,5 +1,5 @@
+<!-- node multi-mongo -->
 <testcases>
-    <!-- SAMPLE TEST CASE -->
     <case>
         <url>TARGETURL:1341/</url>
     </case>

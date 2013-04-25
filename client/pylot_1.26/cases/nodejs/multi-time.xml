@@ -1,5 +1,5 @@
+<!-- node multi-time -->
 <testcases>
-    <!-- SAMPLE TEST CASE -->
     <case>
         <url>TARGETURL:8001/</url>
     </case>

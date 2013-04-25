@@ -1,0 +1,6 @@
+<!-- servlet time -->
+<testcases>
+    <case>
+    	<url>TARGETURL:8080/servlet/</url>
+    </case>
+</testcases>
