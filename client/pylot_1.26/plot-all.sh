@@ -47,9 +47,6 @@ set ylabel "requests per sec"
 plot "$line" using 2 smooth sbezier with lines title "graph"
 
 EOF
-
 done
-
-
 
 echo "finished plotting"

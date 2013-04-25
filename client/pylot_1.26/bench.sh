@@ -87,14 +87,17 @@ cp -R ./cases ./cases.bak
 sed -i "s|TARGETURL|$target|g" $caseFile
 
 name=$caseFile
+# run pylot with defined config
 cmd="python2 run.py -n $name -r $rampup -a $agents -d $duration -x $caseFile > results/$name.pylot"
 
-#sleep a while
+# sleep a while
 sleep $timeout
 
+# plot results via gnuplot
 echo "exec plot script"
 sh ./plot-all.sh
 
+# revert backup cases
 echo "reverting cases files"
 rm -rf ./cases
 mv ./cases.bak ./cases
