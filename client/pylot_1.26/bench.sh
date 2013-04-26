@@ -4,6 +4,8 @@
 # -t TEST-APP
 # -f TEST-CASE
 
+cd "$(dirname "$0")"
+
 if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
   echo "runs a pylot benchmark, creates result graphs with gnuplot (via plot-all.sh)"
   echo ""
@@ -82,6 +84,8 @@ fi
 echo "running with case '$targetPath'"
 echo "pylot agents=$agents duration=$duration"
 echo "inserting target url in pylot test cases"
+
+exit 0
 
 cp -R ./cases ./cases.bak
 sed -i "s|TARGETURL|$target|g" $caseFile
