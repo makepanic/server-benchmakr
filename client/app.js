@@ -30,11 +30,16 @@ socket.on('connect', function(){
       console.log('successfully connected to server');
 
       options.ready = true;
-      if(slave === null){
-        slave = new Commander(data.data, function(){
 
-          socket.emit('ping');
-          console.log('commander finished');
+      if(slave === null){
+        slave = new Commander(data.data, function(ready){
+          if(ready){
+            socket.emit('ping');
+            console.log('commander finished');
+          }else{
+            console.log('pong.status != status.SUCCESS, exiting');
+            socket.disconnect();       
+          }
         
         }).promoteClient();
       }
@@ -61,7 +66,8 @@ socket.on('connect', function(){
       slave.run();
     }else{
       console.log('pong.status != status.SUCCESS, exiting');
-      process.exit(0);
+      socket.disconnect();
+      //process.exit(0);
     }
   });
 
@@ -73,4 +79,5 @@ socket.on('connect', function(){
 
 socket.on('disconnect', function(data){
   console.log('disconnected');
+  //process.exit(0);     
 });
