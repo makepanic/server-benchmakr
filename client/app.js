@@ -30,12 +30,14 @@ socket.on('connect', function(){
       console.log('successfully connected to server');
 
       options.ready = true;
-      slave = new Commander(data.data, function(){
+      if(slave === null){
+        slave = new Commander(data.data, function(){
 
-        socket.emit('ping');
-
-        console.log('commander finished');
-      }).promoteClient();
+          socket.emit('ping');
+          console.log('commander finished');
+        
+        }).promoteClient();
+      }
 
       slave.before(function(done){
         console.log('slave.before');
