@@ -57,6 +57,9 @@ socket.on('connect', function(){
       });
 
       slave.run();
+    }else{
+      console.log('pong.status != status.SUCCESS, exiting');
+      process.exit(0);
     }
   });
 
