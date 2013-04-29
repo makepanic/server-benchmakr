@@ -24,9 +24,7 @@ fs.readdir('.', function (err, files) {
           
           var fullPath = __dirname + '/' + file + '/' + 'bench-cfg.json';
         
-          var cfg = fs.readFileSync(fullPath, {
-            'encoding' : 'UTF-8'
-          });
+          var cfg = fs.readFileSync(fullPath, 'utf8');
 
           benchmarks.push(JSON.parse(cfg));
         }
