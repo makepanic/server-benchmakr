@@ -1,4 +1,4 @@
-<!-- node mongo -->
+<!-- node mongodb -->
 <testcases>
     <case>
         <url>TARGETURL:1340/</url>

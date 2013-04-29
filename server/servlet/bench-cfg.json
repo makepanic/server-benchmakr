@@ -2,8 +2,8 @@
   "application" : "nodejs",
   "directory" : "nodejs",
   "command" : "node",
-  "start" : "",
-  "stop"  : "",
+  "start" : "/home/ubuntu/bin/apache-tomcat-7.0.37/bin/startup.sh",
+  "stop"  : "/home/ubuntu/bin/apache-tomcat-7.0.37/bin/shutdown.sh",
   "tests" : [{
     "name" : "time",
     "port" : 8000,

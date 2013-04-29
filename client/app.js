@@ -2,6 +2,13 @@ var io = require('socket.io-client'),
     Commander = require('../lib/commander.js'),
     serverUrl = 'http://localhost:9000';
 
+/*
+
+TODO:
+  socket.emit ""
+  
+
+*/
 
 var status = {
   SUCCESS: 'success',
@@ -50,7 +57,7 @@ socket.on('connect', function(){
 
         setTimeout(function(){
           done();
-        }, 1000);
+        }, 10000);
 
       }).after(function(done){
 
