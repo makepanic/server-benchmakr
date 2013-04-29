@@ -1,17 +1,20 @@
 #! /bin/bash
 
+# exit on non-zero status
+set -e
+
 # USAGE:
 # -t TEST-APP
 # -f TEST-CASE
 
 cd "$(dirname "$0")"
 
-if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+if [ "$1" = "-h" ]; then
   echo "runs a pylot benchmark, creates result graphs with gnuplot (via plot-all.sh)"
   echo ""
   echo "Usage:"
-  echo "	-t application type, eg. \"nodejs\""
-  echo "	-f pylot case file , eg. \"time\" ( automatically adds *.xml )"
+  echo "        -t application type, eg. \"nodejs\""
+  echo "        -f pylot case file , eg. \"time\" ( automatically adds *.xml )"
   echo ""
   echo "Example: ./bench.sh -t nodejs -f mysql"
   exit 0
@@ -21,8 +24,9 @@ fi
 agents=100
 duration=30
 rampup=0
-target="http://your-server-baseurl-here.com"
+target="http://your.url.tld/"
 timeout=2
+
 
 # cases cfg
 caseDir="cases/"
@@ -31,10 +35,10 @@ caseFile=""
 testType=""
 
 if [ -d "cases.bak" ]; then
-	# abort if old cases backup exists
-	# dont run pylot tests parallel
-	echo "old case backup exists, stopping"
-	exit 1
+        # abort if old cases backup exists
+        # dont run pylot tests parallel
+        echo "old case backup exists, stopping"
+        exit 1
 fi
 
 while getopts ":f:t:" optname
@@ -64,35 +68,41 @@ while getopts ":f:t:" optname
     esac
   done
 
-if [[ -z "$testType" ]]; then
-	echo "no testType set, aborting"
-	exit 1
+
+if [ -z "$testType" ]; then
+        echo "no testType set, aborting"
+        exit 1
 fi
-if [[ -z "$caseFile" ]]; then
-	echo "no caseFile set, aborting"
-	exit 1
+if [ -z "$caseFile" ]; then
+        echo "no caseFile set, aborting"
+        exit 1
 fi
 
 targetPath="$caseDir$testType/$caseFile.xml"
 
 
 if [ ! -e "$targetPath" ]; then
-	echo "target path $targetPath does not exists, aborting"
-	exit 1
+        echo "target path $targetPath does not exists, aborting"
+        exit 1
 fi
 
 echo "running with case '$targetPath'"
 echo "pylot agents=$agents duration=$duration"
 echo "inserting target url in pylot test cases"
-
-exit 0
+echo "targetPath=$targetPath"
 
 cp -R ./cases ./cases.bak
-sed -i "s|TARGETURL|$target|g" $caseFile
+sed -i "s|TARGETURL|$target|g" $targetPath
 
 name=$caseFile
+
+mkdir -p "results/"
+
 # run pylot with defined config
-cmd="python2 run.py -n $name -r $rampup -a $agents -d $duration -x $caseFile > results/$name.pylot"
+cmd="python2.7 run.py -n $name -r $rampup -a $agents -d $duration -x $targetPath > results/$name.pylot"
+echo "running $cmd"
+eval $cmd
+
 
 # sleep a while
 sleep $timeout
